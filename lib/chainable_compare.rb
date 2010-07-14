@@ -17,17 +17,35 @@ class ChainableCompare
 end
 
 module ChainablyComparable
-  def self.included(klass)
-    %w(< > <= >=).each do |operator|
-      klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{operator}(other)
-          if super
-            ChainableCompare.new(other)
-          else
-            false
-          end
-        end
-      RUBY
+  def <(other)
+    if (self <=> other) == -1
+      ChainableCompare.new(other)
+    else
+      false
+    end
+  end
+
+  def >(other)
+    if (self <=> other) == 1
+      ChainableCompare.new(other)
+    else
+      false
+    end
+  end
+
+  def <=(other)
+    if (self <=> other) <= 0
+      ChainableCompare.new(other)
+    else
+      false
+    end
+  end
+
+  def >=(other)
+    if (self <=> other) >= 0
+      ChainableCompare.new(other)
+    else
+      false
     end
     
   end
